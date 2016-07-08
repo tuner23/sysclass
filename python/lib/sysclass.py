@@ -55,10 +55,10 @@ class SysClass:
             config_files = []
             ## File/Path destination of the configuration
             if not os.path.exists(self.config):
-                msg = str(self.config) + "is not a file or path in current directory. Trying out script location."
+                msg = str(self.config) + " is not a file or path in current directory. Trying out script location."
                 self.add_message(msg, level='WARNING')
                 if self.config.startswith('./'):
-                    self.config = os.path.dirname(__file__) + '/' + self.config.lstrip('./')
+                    self.config = os.path.dirname(os.path.abspath(sys.argv[0])) + '/' + self.config.lstrip('./')
                     if not os.path.exists(self.config):
                         msg = "Sorry, no configuration file found! Use --no-config if you want to disable configfile usage"
                         self.add_message(msg, level='ERROR')
@@ -71,9 +71,12 @@ class SysClass:
                     if f.endswith(".conf"):
                         config_files.append(self.config.rstrip('/') + '/' + f)
             else:
-                self.ErrorExit(self, "Sorry, " + str(self.config_file) + " is neither a directory, nor a file")
+                msg = "Sorry, " + str(self.config) + " is neither a directory, nor a file!"
+                self.add_message(msg, level='ERROR')
+                raise Exception(msg)
             ## List of configuration files to be parsed
             self.config_files = config_files
+            print self.config_files
             self.sysclass_section = "sysclass"
             ## TODO: set in cfg-file or options or 'main'
             self.main_section = self.options.section
