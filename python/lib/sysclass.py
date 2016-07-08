@@ -15,6 +15,7 @@ __email__ = "antonios.dimtsoudis@gmx.de"
  
 import os
 import sys
+import time
 import inspect
 import ConfigParser
  
@@ -37,6 +38,10 @@ class SysClass:
         ## get options and args
         ################################################################
         (self.options, self.args) = parser.parse_args()
+
+        ## Setup Logs
+        ################################################################
+        self.messages = {}
  
         ## main section inside configuration files
         ################################################################
@@ -49,15 +54,17 @@ class SysClass:
         if self.config:
             config_files = []
             ## File/Path destination of the configuration
-            self.config_path = self.options.config
-            if not os.path.exists(self.config_path):
-                self.ErrorExit(self, "Sorry, defined configuration file does not exist: " + str(self.config_path))
-            if os.path.isfile(self.config_path):
-                config_files = [self.config_path]
-            elif os.path.isdir(self.config_path):
-                for f in os.listdir(self.config_path):
+            if not os.path.exists(self.config):
+                msg = str(self.config) + "is not a file or path in current directory. Trying out script location."
+                self.add_message(msg, level='WARNING')
+                print self.messages
+                self.ErrorExit(self, "Sorry, defined configuration file does not exist: " + str(self.config))
+            if os.path.isfile(self.config):
+                config_files = [self.config]
+            elif os.path.isdir(self.config):
+                for f in os.listdir(self.config):
                     if f.endswith(".conf"):
-                        config_files.append(self.config_path.rstrip('/') + '/' + f)
+                        config_files.append(self.config.rstrip('/') + '/' + f)
             else:
                 self.ErrorExit(self, "Sorry, " + str(self.config_file) + " is neither a directory, nor a file")
             ## List of configuration files to be parsed
@@ -102,6 +109,12 @@ class SysClass:
 ## Functions
 ################################################################
 ## TODO: Implement logging in sysclass
+    ## Add message logging
+    def add_message(self, message, level='INFO'):
+        actime = time.time()
+        self.messages[actime] = {message: message, level: level}
+
+
     ## Throw out message 
     def ThrowMsg(self, output, header=None, msgtype="WARNING"):
         """Throw out message, no matter if verbosity or debugging is set
