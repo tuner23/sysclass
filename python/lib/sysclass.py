@@ -81,6 +81,8 @@ class SysClass:
             ## ConfigParser object with parsed configuration
             self.configuration = ConfigParser.ConfigParser()
             self.configuration.read(self.config_files)
+        else:
+            self.add_message("Configfile functionality disabled!", level='SYSINFO')
 
  
         ## Set debugging and the verbosity
@@ -117,7 +119,7 @@ class SysClass:
     ## Add message logging
     def add_message(self, message, level='INFO'):
         actime = time.time()
-        self.messages[actime] = {message: message, level: level}
+        self.messages[actime] = {"message": message, "level": level}
 
 
     ## Throw out message 
