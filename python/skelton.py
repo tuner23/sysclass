@@ -41,6 +41,11 @@ parser.add_option(      "-C", "--config",
             default = default,
             help = "Location of the configfile(s) (default: " + default + "). Includes all *.conf files inside directory.")
 
+parser.add_option(      "--no-config",
+            dest ="config",
+            action="store_false",
+            help ="Disable configuration functionality")
+
 default = './log.d/default.log'
 parser.add_option(      "-L", "--logging",
             dest ="log",
@@ -73,10 +78,13 @@ if len(sys.argv)==1:
 def main(argv=None):
     ### Get Options and initialize system class
     sysclass = SysClass(parser)
+    print sysclass.messages
 
     ### Do somethin
     cmpObj = MyApp(sysclass)
     cmpObj.F()
+
+    print sysclass.messages
 
 
 
