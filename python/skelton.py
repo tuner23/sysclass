@@ -68,7 +68,7 @@ default = "main"
 parser.add_option(      "-S", "--section",
             dest ="section",
             default="main",
-            help ="Select the main section of the main configuration file used to store sysclass variables. (default: " + default + ").")
+            help ="Select the main section of the configuration file (default: " + default + ").")
 
 if len(sys.argv)==1:
     parser.print_help()
