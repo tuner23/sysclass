@@ -19,35 +19,37 @@ import inspect
 import ConfigParser
  
 ## TODO: Documentation of package, class, function
-class SystemClass:
+class SysClass:
     def __init__(self,parser):
         """The Constructor.
  
         Draw some Initialization."""
- 
+        ## TODO: Initialization without parser (e.g. script example)
         self.parser = parser
  
-        ## Set some vars
+        ## set some vars
         ################################################################
-        ## Separators
+        ## separators
         self.separator = "## -----------------------------------------------------------------------------"
         self.verboseseparator = "## --Verbose--------------------------------------------------------------------"
         self.debugSeparator = "## --Debug----------------------------------------------------------------------"
  
-        ## Get options and args
+        ## get options and args
         ################################################################
         (self.options, self.args) = parser.parse_args()
  
-        ## Parse config files
+        ## main section inside configuration files
         ################################################################
-        ## Use configuration files
+        self.main_section = self.options.section
+
+        ## parse config files
+        ################################################################
         self.config = self.options.config
-        ## Main section inside configuration files
-        self.main_section = False
+        ## find path
         if self.config:
             config_files = []
             ## File/Path destination of the configuration
-            self.config_path = self.options.config_path
+            self.config_path = self.options.config
             if not os.path.exists(self.config_path):
                 self.ErrorExit(self, "Sorry, defined configuration file does not exist: " + str(self.config_path))
             if os.path.isfile(self.config_path):
@@ -61,7 +63,9 @@ class SystemClass:
             ## List of configuration files to be parsed
             self.config_files = config_files
             self.sysclass_section = "sysclass"
+            ## TODO: set in cfg-file or options or 'main'
             self.main_section = self.options.section
+
             ## ConfigParser object with parsed configuration
             self.configuration = ConfigParser.ConfigParser()
             self.configuration.read(self.config_files)
@@ -197,11 +201,17 @@ class SystemClass:
     def GetValue(self, value, section=None):
         """Try to get value from given data
         Order: cmdline --> defined section --> main section"""
+	## TODO: integrate sysclass-section
         result = None
  
         ## Get value from cmdline args
+	print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         result = getattr(self.options, value, False)
- 
+        print result
+	if self.config:
+	    self.config.get(section, value)
+
+	sys.exit()
         ## Get value from config files
         if not result and self.config:
             if section and self.configuration.has_option(section, value):

@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 ## Python Classes
-import os
+#import os
 import sys
 from optparse import OptionParser
 
 ## Own Classes
-from systemclass import SystemClass
-from myapp import MyApp
+## TODO: Move to /lib
+from lib.sysclass import SysClass
+from lib.skeleton_class import MyApp
 
 
 ## Allow multiline descriptions
@@ -19,11 +20,11 @@ class MyOptionParser(OptionParser):
         return self.expand_prog_name(self.epilog)
 
 ## Parse Options
-parser = MyOptionParser(  "%prog   [OPTIONS]",
+parser = MyOptionParser(  "Usage: %prog   [OPTIONS]",
             description = """\
-MyApp - Dummy
+MyApp - Skeleton for Python
 
-Skeleton for new software using sysclass
+Skeleton for new scripts including logging, configfile parsing and more..
 """,
             version = "0.9",
             epilog = """
@@ -34,16 +35,17 @@ Examples:
 """ 
 )
 
+default = './conf.d/'
 parser.add_option(      "-C", "--config",
             dest ="config",
-            default = False,
-            action = "store_true",
-            help = "Activate config file handling (default: ./conf.d/). \nIncludes all *.conf files inside directory.")
+            default = default,
+            help = "Location of the configfile(s) (default: " + default + "). Includes all *.conf files inside directory.")
 
-parser.add_option(      "-P", "--config-path",
-            dest ="config_path",
-            default="./conf.d/",
-            help ="Define individual configuration path/file (default: ./conf.d/).")
+default = './log.d/default.log'
+parser.add_option(      "-L", "--logging",
+            dest ="log",
+            default = default,
+            help = "Location of the logfile (default: " + default + ").")
 
 parser.add_option(      "-V", "--verbose",
             dest ="verbosity",
@@ -57,16 +59,20 @@ parser.add_option(      "-D", "--debug",
             default=False,
             help ="Enable debugging")
 
+default = "main"
 parser.add_option(      "-S", "--section",
             dest ="section",
             default="main",
-            help ="Select the main section of the main configuration file (default: main).")
+            help ="Select the main section of the main configuration file used to store sysclass variables. (default: " + default + ").")
 
+if len(sys.argv)==1:
+    parser.print_help()
+    sys.exit(1)
 
 
 def main(argv=None):
     ### Get Options and initialize system class
-    sysclass = SystemClass(parser)
+    sysclass = SysClass(parser)
 
     ### Do somethin
     cmpObj = MyApp(sysclass)

@@ -71,5 +71,5 @@ class MyApp:
         raise Exception("Subfunction complete!!")
  
 if __name__ == '__main__':
-    app = MyApp
-    a.F()
+    app = MyApp()
+    app.F()
