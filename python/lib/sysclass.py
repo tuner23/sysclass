@@ -57,8 +57,13 @@ class SysClass:
             if not os.path.exists(self.config):
                 msg = str(self.config) + "is not a file or path in current directory. Trying out script location."
                 self.add_message(msg, level='WARNING')
-                print self.messages
-                self.ErrorExit(self, "Sorry, defined configuration file does not exist: " + str(self.config))
+                if self.config.startswith('./'):
+                    self.config = os.path.dirname(__file__) + '/' + self.config.lstrip('./')
+                    if not os.path.exists(self.config):
+                        msg = "Sorry, no configuration file found! Use --no-config if you want to disable configfile usage"
+                        self.add_message(msg, level='ERROR')
+                        raise Exception(msg)
+
             if os.path.isfile(self.config):
                 config_files = [self.config]
             elif os.path.isdir(self.config):
