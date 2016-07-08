@@ -46,6 +46,8 @@ class SysClass:
         ## main section inside configuration files
         ################################################################
         self.main_section = self.options.section
+        ## TODO: set in cfg-file or options or 'main'
+        self.sysclass_section = "sysclass"
 
         ## parse config files
         ################################################################
@@ -76,10 +78,6 @@ class SysClass:
                 raise Exception(msg)
             ## List of configuration files to be parsed
             self.config_files = config_files
-            print self.config_files
-            self.sysclass_section = "sysclass"
-            ## TODO: set in cfg-file or options or 'main'
-            self.main_section = self.options.section
 
             ## ConfigParser object with parsed configuration
             self.configuration = ConfigParser.ConfigParser()
